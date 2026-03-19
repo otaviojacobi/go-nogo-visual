@@ -3,88 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Go / NoGo</title>
+    <title>Teste Go / No-Go Visual</title>
     <link rel="stylesheet" href="src/css/style.css">
 </head>
 <body>
     <main class="container">
         <section id="screen-intro" class="screen active">
-            <header>
-                <h1 class="title">Go / NoGo</h1>
-            </header>
-            <div class="instructions-box">
-                <div class="main-text">
-                    <p>Durante o teste, você verá um círculo aparecer no centro da tela em duas cores diferentes. Sua tarefa será reagir adequadamente a cada uma delas.</p>
-                </div>
+            <h1 class="title">Instruções</h1>
+            <div class="panel">
+                <p style="margin-bottom: 15px;">Durante o teste, você verá um círculo aparecer no centro da tela em duas cores diferentes. Sua tarefa será reagir adequadamente a cada uma delas.</p>
                 <div class="instruction-grid">
                     <div class="instruction-item">
                         <div class="circle-icon go"></div>
-                        <div>
-                            <strong>Círculo VERDE</strong>
-                            <p>Aperte <span class="key-badge">ESPAÇO</span> o mais rápido possível.</p>
-                        </div>
+                        <div><strong>Círculo VERDE</strong><p>Aperte <span class="key-badge">ESPAÇO</span> o mais rápido possível.</p></div>
                     </div>
                     <div class="instruction-item">
                         <div class="circle-icon nogo"></div>
-                        <div>
-                            <strong>Círculo VERMELHO</strong>
-                            <p>Não aperte nada. Aguarde ele sumir.</p>
-                        </div>
+                        <div><strong>Círculo VERMELHO</strong><p>Não aperte nada. Aguarde ele sumir.</p></div>
                     </div>
                 </div>
             </div>
-            <button id="btn-start" class="btn-primary"><span>▶</span> Iniciar Avaliação</button>
+
+            <div class="panel">
+                <strong class="panel-subtitle">⚠️ IMPORTANTE</strong>
+                <ul class="info-list">
+                    <li><strong>ATENÇÃO:</strong> Mantenha o foco durante todo o teste.</li>
+                    <li><strong>SEM PAUSAS:</strong> Não é possível interromper o teste.</li>
+                    <li><strong>POSIÇÃO:</strong> Mantenha o dedo sobre a barra de espaço.</li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button id="btn-trial" class="btn-secondary">Iniciar Treino</button>
+                <button id="btn-start" class="btn-primary">Iniciar Teste Oficial</button>
+            </div>
         </section>
 
-        <section id="screen-test" class="screen hidden">
-            <div id="stimulus-area"></div>
-            <div id="fixation-cross" class="hidden">+</div>
-            <p class="hint">Mantenha o dedo na barra de espaço...</p>
+        <section id="screen-estimation" class="screen hidden">
+            <div class="panel">
+                <h2>Fim do Teste</h2>
+                <p>Quantos minutos você acha que o teste durou?</p>
+                <input type="number" id="input-time-est" placeholder="Ex: 10">
+                <button id="btn-submit-est" class="btn-primary btn-full">Ver Resultados</button>
+            </div>
         </section>
 
         <section id="screen-results" class="screen hidden">
-            <div class="results-header">
-                <h2>📊 Relatório de Performance</h2>
-            </div>
+            <h2 class="title">Relatório</h2>
             <div class="stats-grid">
-                <div class="card">
-                    <span class="card-label">Precisão (Hits)</span>
-                    <span id="res-accuracy" class="card-value">0%</span>
-                </div>
-                <div class="card">
-                    <span class="card-label">Tempo Médio</span>
-                    <span id="res-avg-time" class="card-value">0ms</span>
-                </div>
-                <div class="card">
-                    <span class="card-label">Total de Erros</span>
-                    <span id="res-total-errors" class="card-value error-text">0</span>
-                </div>
+                <div class="card"><span class="card-label">Acertos (A)</span><span id="res-hits" class="card-value">0</span></div>
+                <div class="card"><span class="card-label">Média RT</span><span id="res-avg-time" class="card-value">0ms</span></div>
+                <div class="card"><span class="card-label">Omissões (O)</span><span id="res-omission" class="card-value">0</span></div>
+                <div class="card"><span class="card-label">Ação (E)</span><span id="res-action" class="card-value">0</span></div>
             </div>
+
             <div class="panel">
-                <h3>📈 Tendência do Tempo de Reação</h3>
-                <div id="chart-container" class="chart-box">
-                    <svg id="chart-line-svg"></svg>
-                    <div id="chart-dots-area"></div>
+                <h3 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--blue);">Gráfico de Variabilidade (100-500ms)</h3>
+                <div class="chart-wrapper">
+                    <svg id="rt-chart" width="100%" height="100%"></svg>
                 </div>
-                <div class="chart-legend">
-                    <span><i class="dot blue"></i> Acerto (Verde)</span>
-                    <span><i class="dot red"></i> Erro (Vermelho)</span>
-                </div>
+                <p style="font-size: 0.7rem; color: var(--text-dim); text-align: center; margin-top: 8px;">
+                Omissão (Amarelo) | Erro (Vermelho) | Acerto (Verde).
+                </p>
             </div>
-            <div class="panel">
-                <h3>📋 Log de Respostas</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Item</th><th>Tipo</th><th>Resultado</th><th class="text-right">Tempo</th></tr>
-                        </thead>
-                        <tbody id="table-body"></tbody>
-                    </table>
-                </div>
-            </div>
-            <button id="btn-copy" class="btn-primary btn-full"><span>📋</span> Copiar Relatório</button>
+
+            <div id="detalhes-resultados"></div>
+
+            <button onclick="window.location.reload()" class="btn-secondary btn-full" style="margin-top: 20px;">Reiniciar Teste</button>
         </section>
     </main>
+
+    <div id="screen-test" class="full-black-screen hidden">
+        <div id="fixation-cross">+</div>
+        <div id="stimulus-area"></div>
+    </div>
+
     <script src="src/js/script.js"></script>
 </body>
 </html>
