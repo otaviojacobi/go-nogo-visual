@@ -15,11 +15,11 @@
                 <div class="instruction-grid">
                     <div class="instruction-item">
                         <div class="circle-icon go"></div>
-                        <div><strong>Círculo VERDE</strong><p>Aperte <span class="key-badge">ESPAÇO</span> o mais rápido possível.</p></div>
+                        <div>Círculo <strong class="strong-green">VERDE</strong><p>Aperte <span class="key-badge">ESPAÇO</span> o mais rápido possível.</p></div>
                     </div>
                     <div class="instruction-item">
                         <div class="circle-icon nogo"></div>
-                        <div><strong>Círculo VERMELHO</strong><p>Não aperte nada. Aguarde ele sumir.</p></div>
+                        <div> Círculo <strong class="strong-red"> VERMELHO</strong><p>Não aperte nada. Aguarde ele sumir.</p></div>
                     </div>
                 </div>
             </div>
@@ -27,57 +27,55 @@
             <div class="panel">
                 <h3 class="panel-subtitle"><strong>⚠️ Importante</strong></h3>
                 <ul class="info-list">
-                    <li><strong>Atenção:</strong> Mantenha o foco durante todo o teste.</li>
-                    <li><strong>Sem Pausas:</strong> Não é possível interromper o teste.</li>
-                    <li><strong>Posição:</strong> Mantenha o dedo sobre a barra de espaço.</li>
+                    <li><strong class="strong-blue">Atenção:</strong> Mantenha o foco durante todo o teste.</li>
+                    <li><strong class="strong-blue">Sem Pausas:</strong> Não é possível interromper o teste.</li>
+                    <li><strong class="strong-blue">Posição:</strong> Mantenha o dedo sobre a barra de espaço.</li>
                 </ul>
-            </div>
-
-            <div class="btn-group">
-                <button id="btn-trial" class="btn-secondary">Iniciar Treino</button>
-                <button id="btn-start" class="btn-primary">Iniciar Teste Oficial</button>
+                
+                <div class="start-trigger-container">
+                    <p>Pressione o botão abaixo para iniciar o treino:</p>
+                    <button id="btn-trial" class="space-key-btn">ESPAÇO</button>
+                </div>
+            </div>          
+        </section>
+        <section id="screen-post-trial" class="screen hidden">
+            <div class="panel" style="text-align: center;">
+                <h2 class="title">Treino Finalizado</h2>
+                <p style="margin-bottom: 20px; color: var(--text-dim);">Prepare-se para o teste oficial.</p>
+                <p id="timer-msg">O botão será liberado em:</p>
+                <button id="btn-start-official" class="space-key-btn">AGUARDE</button>
             </div>
         </section>
 
+        <div id="screen-test" class="full-black-screen hidden">
+            <div id="fixation-cross">+</div>
+            <div id="stimulus-area"></div>
+        </div>
+
         <section id="screen-estimation" class="screen hidden">
             <div class="panel">
-                <h2>Fim do Teste</h2>
-                <p>Quantos minutos você acha que o teste durou?</p>
+                <h2 class="title">Fim do Teste</h2>
+                <p>Quanto tempo você acha que durou o teste oficial? (em minutos)</p>
                 <input type="number" id="input-time-est" placeholder="Ex: 10">
-                <button id="btn-submit-est" class="btn-primary btn-full">Ver Resultados</button>
+                <button id="btn-submit-est" class="space-key-btn btn-full">VER RESULTADOS</button>
             </div>
         </section>
 
         <section id="screen-results" class="screen hidden">
-            <h2 class="title">Relatório</h2>
+            <h2 class="title">Relatório de Performance</h2>
             <div class="stats-grid">
-                <div class="card"><span class="card-label">Acertos (A)</span><span id="res-hits" class="card-value">0</span></div>
-                <div class="card"><span class="card-label">Média RT</span><span id="res-avg-time" class="card-value">0ms</span></div>
-                <div class="card"><span class="card-label">Omissões (O)</span><span id="res-omission" class="card-value">0</span></div>
-                <div class="card"><span class="card-label">Ação (E)</span><span id="res-action" class="card-value">0</span></div>
+                <div class="card"><span class="card-label">Acertos</span><span id="res-hits" class="card-value">-</span></div>
+                <div class="card"><span class="card-label">Média RT</span><span id="res-avg-time" class="card-value">-</span></div>
+                <div class="card"><span class="card-label">Omissões</span><span id="res-omission" class="card-value">-</span></div>
+                <div class="card"><span class="card-label">Falsos Alar.</span><span id="res-action" class="card-value">-</span></div>
             </div>
-
-            <div class="panel">
-                <h3 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--blue);">Gráfico de Variabilidade (100-500ms)</h3>
-                <div class="chart-wrapper">
-                    <svg id="rt-chart" width="100%" height="100%"></svg>
-                </div>
-                <p style="font-size: 0.7rem; color: var(--text-dim); text-align: center; margin-top: 8px;">
-                Omissão (Amarelo) | Erro (Vermelho) | Acerto (Verde).
-                </p>
+            <div class="chart-wrapper">
+                <svg id="rt-chart"></svg>
             </div>
-
             <div id="detalhes-resultados"></div>
-
-            <button onclick="window.location.reload()" class="btn-secondary btn-full" style="margin-top: 20px;">Reiniciar Teste</button>
+            <button onclick="location.reload()" class="space-key-btn btn-full" style="margin-top:10px">REINICIAR</button>
         </section>
-    </main>
-
-    <div id="screen-test" class="full-black-screen hidden">
-        <div id="fixation-cross">+</div>
-        <div id="stimulus-area"></div>
     </div>
-
     <script src="src/js/script.js"></script>
 </body>
 </html>
