@@ -119,7 +119,7 @@ body {
 }
 
 .btn-secondary { 
-    background: rgba(255,255,255,0.05); 
+    background: var(--blue); 
     color: var(--text); 
     border: 1px solid var(--border); 
     padding: 1rem; 
