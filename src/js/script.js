@@ -12,7 +12,10 @@ const cross = document.getElementById('fixation-cross');
 const btnOfficial = document.getElementById('btn-start-official');
 
 const show = id => {
-    document.querySelectorAll('.screen, .full-black-screen').forEach(s => s.classList.add('hidden'));
+    document.querySelectorAll('.screen, .full-black-screen').forEach(s => {
+        s.classList.add('hidden');
+        s.classList.remove('active');
+    });
     const target = document.getElementById(id);
     target.classList.remove('hidden');
     target.classList.add('active');
