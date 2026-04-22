@@ -9,34 +9,29 @@
 <body>
     <main class="container">
         <section id="screen-intro" class="screen active">
-            <h1 class="title">Instruções</h1>
-            <div class="panel">
-                <p style="margin-bottom: 15px;">Durante o teste você verá um círculo aparecer no centro da tela em duas cores diferentes. Sua tarefa será reagir à cor apresentada, com a barra de espaço, conforme as instruções abaixo:</p>
-                <div class="instruction-grid">
-                    <div class="instruction-item">
+            <div class="instr-card">
+                <h2>Instruções</h2>
+                <p>Durante o teste você verá um círculo aparecer no centro da tela em duas cores diferentes. Reaja conforme as regras abaixo:</p>
+                <div class="rules-container">
+                    <div class="rule rule-go">
                         <div class="circle-icon go"></div>
-                        <div>Círculo <strong class="strong-green">VERDE</strong><p>Aperte <span class="key-badge">ESPAÇO</span> o mais rápido possível.</p></div>
+                        <span>Círculo <strong>VERDE</strong>: Pressione a <strong>BARRA DE ESPAÇO</strong> o mais rápido possível.</span>
                     </div>
-                    <div class="instruction-item">
+                    <div class="rule rule-nogo">
                         <div class="circle-icon nogo"></div>
-                        <div> Círculo <strong class="strong-red"> VERMELHO</strong><p>Não aperte nada. Aguarde ele sumir.</p></div>
+                        <span>Círculo <strong>VERMELHO</strong>: <strong>NÃO</strong> aperte nada. Aguarde ele sumir.</span>
                     </div>
                 </div>
             </div>
-
-            <div class="panel">
-                <h3 class="panel-subtitle"><strong>⚠️ Importante</strong></h3>
+            <div class="instr-card important-card">
+                <h2>⚠️ IMPORTANTE</h2>
                 <ul class="info-list">
-                    <li><strong class="strong-blue">Atenção:</strong> Mantenha o foco durante todo o teste.</li>
-                    <li><strong class="strong-blue">Sem Pausas:</strong> Não é possível interromper o teste.</li>
-                    <li><strong class="strong-blue">Posição:</strong> Mantenha o dedo sobre a barra de espaço.</li>
+                    <li><strong>ATENÇÃO:</strong> Mantenha o foco durante todo o teste.</li>
+                    <li><strong>SEM PAUSAS:</strong> Não é possível interromper o teste.</li>
+                    <li><strong>POSIÇÃO:</strong> Mantenha o dedo sobre a barra de espaço.</li>
                 </ul>
-                
-                <div class="start-trigger-container">
-                    <p>Pressione o botão abaixo para iniciar o treino:</p>
-                    <button id="btn-trial" class="space-key-btn">ESPAÇO</button>
-                </div>
-            </div>          
+            </div>
+            <button id="btn-trial" class="btn-main">Iniciar Treino (ESPAÇO)</button>
         </section>
         <section id="screen-post-trial" class="screen hidden">
             <div class="panel" style="text-align: center;">
