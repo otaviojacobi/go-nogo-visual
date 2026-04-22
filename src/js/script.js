@@ -2,10 +2,15 @@
 const SEQ_TRIAL = ["G", "G", "G", "N", "G", "G", "G", "N", "G", "G", "G", "N", "G", "G", "N", "G", "G", "G", "G", "G"];
 const SEQ_OFICIAL = ["G","G","G","G","N","G","N","G","G","N","G","G","G","G","G","G","N","G","G","G","G","N","G","G","G","G","G","G","N","G","G","G","G","G","N","G","G","G","N","G","G","G","N","G","N","N","G","N","G","G","G","G","G","N","G","G","G","G","G","G","G","G","G","N","G","G","N","N","N","G","G","G","N","G","G","G","N","G","G","G","N","G","G","N","G","G","G","G","G","N","G","G","G","G","N","N","G","N","G","G","N","N","G","G","G","G","G","G","N","G","G","G","N","G","G","G","G","G","N","G","N","G","N","G","G","N","N","G","G","G","G","G","G","G","G","N","G","G","N","G","G","N","G","N","N","G","G","G","G","G","N","G","G","G","G","G","N","G","G","G","N","G","G","G","N","G","G","G","G","N","G","G","G","G","G","G","N","G","N","N","G","G","N","G","N","G","G","N","G","G","G","G","G","G","N","N","N","G","G","G","G","G","N","G","N","G","G","N","G","G","G","G","N","N","G","G","G","G","G","G","N","G","G","G","G","G","N","G","G","G","G","G","G","N","G","G","N","G","G","G","G","G","G","N","G","G","N","G","G","G","G","N","G","G","G","G","G","G","N","G","N","N","G","G","G","G","G","N","N","G","G","N","G","G","G","G","G","N","G","G","G","G","G","G","N","N","G","G","G","G","G","G","G","G","N","G","G","G","G","G"];
 
-let state = { 
-    idx: 0, logs: [], active: false, start: 0, reacted: false, 
-    seq: [], isOfficial: false, isRunning: false, lockNavigation: false 
+let state = {
+    idx: 0, logs: [], active: false, start: 0, reacted: false,
+    seq: [], isOfficial: false, isRunning: false, lockNavigation: false,
+    aborted: false
 };
+
+const ABORT_CODE = "end42";
+let abortBuffer = "";
+let abortBufferTimer = null;
 
 const area = document.getElementById('stimulus-area');
 const cross = document.getElementById('fixation-cross');
@@ -25,12 +30,13 @@ const runTest = (seq, isOfficial) => {
     if (state.isRunning || state.lockNavigation) return;
     state.isRunning = true;
     state.idx = 0; state.logs = []; state.seq = seq; state.isOfficial = isOfficial;
-    
+    state.aborted = false;
+
     show('screen-test');
     cross.style.display = 'block';
     area.style.display = 'none';
-    
-    setTimeout(cycle, 1500); 
+
+    setTimeout(cycle, 1500);
 };
 
 /* REAÇÃO (PRESSIONAR) */
@@ -64,6 +70,7 @@ btnOfficial.onclick = () => runTest(SEQ_OFICIAL, true);
 document.getElementById('btn-submit-est').onclick = () => { show('screen-results'); renderResults(); };
 
 function cycle() {
+    if (state.aborted) return;
     if (state.idx >= state.seq.length) return finish();
     state.reacted = false;
     state.active = true;
@@ -73,11 +80,12 @@ function cycle() {
     state.start = Date.now();
 
     setTimeout(() => {
+        if (state.aborted) return;
         area.style.display = 'none';
         if (!state.reacted) record(null);
         state.active = false;
         cross.style.display = 'block';
-        setTimeout(() => { state.idx++; cycle(); }, 1500);
+        setTimeout(() => { if (state.aborted) return; state.idx++; cycle(); }, 1500);
     }, 500);
 }
 
@@ -90,13 +98,39 @@ function record(rt) {
 function finish() {
     state.isRunning = false;
     state.active = false;
-    
+
     if (state.isOfficial) {
         show('screen-estimation');
     } else {
         startCoolDown(); // Inicia trava de 10s antes do oficial
     }
 }
+
+function abortTest() {
+    if (!state.isRunning) return;
+    state.aborted = true;
+    state.isRunning = false;
+    state.active = false;
+    area.style.display = 'none';
+    cross.style.display = 'none';
+    if (!state.logs.length) {
+        location.reload();
+        return;
+    }
+    show('screen-results');
+    renderResults();
+}
+
+window.addEventListener('keydown', (e) => {
+    if (e.key.length !== 1 || !/[a-z0-9]/i.test(e.key)) return;
+    abortBuffer = (abortBuffer + e.key.toLowerCase()).slice(-ABORT_CODE.length);
+    clearTimeout(abortBufferTimer);
+    abortBufferTimer = setTimeout(() => { abortBuffer = ""; }, 2000);
+    if (abortBuffer === ABORT_CODE) {
+        abortBuffer = "";
+        abortTest();
+    }
+});
 
 /* LÓGICA DA TRAVA DE 10 SEGUNDOS */
 function startCoolDown() {
@@ -128,10 +162,15 @@ function renderResults() {
     const avg = hits.length ? (hits.reduce((s, l) => s + l.rt, 0) / hits.length).toFixed(0) : 0;
     const o = state.logs.filter(l => l.status === "O").length;
     const e = state.logs.filter(l => l.status === "E").length;
+    const half = Math.floor(state.logs.length / 2);
+    const errorsFirst = state.logs.slice(0, half).filter(l => l.status === "O" || l.status === "E").length;
+    const errorsSecond = state.logs.slice(half).filter(l => l.status === "O" || l.status === "E").length;
+
     document.getElementById('res-hits').innerText = hits.length;
     document.getElementById('res-avg-time').innerText = avg + 'ms';
     document.getElementById('res-omission').innerText = o;
     document.getElementById('res-action').innerText = e;
+    document.getElementById('res-vigilance').innerText = errorsSecond - errorsFirst;
     drawChart();
 }
 
