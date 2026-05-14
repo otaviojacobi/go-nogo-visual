@@ -52,23 +52,14 @@
                 <h2 class="title">Fim do Teste</h2>
                 <p>Quanto tempo você acha que durou o teste oficial? (em minutos)</p>
                 <input type="number" id="input-time-est" placeholder="Ex: 10">
-                <button id="btn-submit-est" class="space-key-btn btn-full">VER RESULTADOS</button>
+                <button id="btn-submit-est" class="space-key-btn btn-full">CONTINUAR</button>
             </div>
         </section>
 
         <section id="screen-results" class="screen hidden">
-            <h2 class="title">Relatório de Performance</h2>
-            <div class="stats-grid">
-                <div class="card"><span class="card-label">Acertos</span><span id="res-hits" class="card-value">-</span></div>
-                <div class="card"><span class="card-label">Média RT</span><span id="res-avg-time" class="card-value">-</span></div>
-                <div class="card"><span class="card-label">Erro de omissão</span><span id="res-omission" class="card-value">-</span></div>
-                <div class="card"><span class="card-label">Erro de ação</span><span id="res-action" class="card-value">-</span></div>
-                <div class="card"><span class="card-label">Decréscimo da Vigilância</span><span id="res-vigilance" class="card-value">-</span></div>
-            </div>
-            <div class="chart-wrapper">
-                <svg id="rt-chart"></svg>
-            </div>
-            <div id="detalhes-resultados"></div>
+            <h2 class="title">Teste Concluído</h2>
+            <p>Clique no botão abaixo para baixar o arquivo CSV com os resultados.</p>
+            <button id="btn-download-csv" class="space-key-btn btn-full">Baixar Resultados (CSV)</button>
             <button onclick="location.reload()" class="space-key-btn btn-full" style="margin-top:10px">REINICIAR</button>
         </section>
     </div>

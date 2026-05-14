@@ -67,7 +67,8 @@ window.addEventListener('keyup', (e) => {
 /* BOTÕES */
 document.getElementById('btn-trial').onclick = () => runTest(SEQ_TRIAL, false);
 btnOfficial.onclick = () => runTest(SEQ_OFICIAL, true);
-document.getElementById('btn-submit-est').onclick = () => { show('screen-results'); renderResults(); };
+document.getElementById('btn-submit-est').onclick = () => { show('screen-results'); };
+document.getElementById('btn-download-csv').onclick = downloadCSV;
 
 function cycle() {
     if (state.aborted) return;
@@ -118,7 +119,6 @@ function abortTest() {
         return;
     }
     show('screen-results');
-    renderResults();
 }
 
 window.addEventListener('keydown', (e) => {
@@ -156,50 +156,24 @@ function startCoolDown() {
     }, 1000);
 }
 
-/* RESULTADOS (Mantidos conforme anterior) */
-function renderResults() {
-    const hits = state.logs.filter(l => l.status === "A");
-    const avg = hits.length ? (hits.reduce((s, l) => s + l.rt, 0) / hits.length).toFixed(0) : 0;
-    const o = state.logs.filter(l => l.status === "O").length;
-    const e = state.logs.filter(l => l.status === "E").length;
-    const half = Math.floor(state.logs.length / 2);
-    const errorsFirst = state.logs.slice(0, half).filter(l => l.status === "O" || l.status === "E").length;
-    const errorsSecond = state.logs.slice(half).filter(l => l.status === "O" || l.status === "E").length;
-
-    document.getElementById('res-hits').innerText = hits.length;
-    document.getElementById('res-avg-time').innerText = avg + 'ms';
-    document.getElementById('res-omission').innerText = o;
-    document.getElementById('res-action').innerText = e;
-    document.getElementById('res-vigilance').innerText = errorsSecond - errorsFirst;
-    drawChart();
-}
-
-function drawChart() {
-    const svg = document.getElementById('rt-chart');
-    const container = svg.parentElement;
-    const w = container.clientWidth, h = container.clientHeight;
-    svg.innerHTML = '';
-    const padL = 40, padB = 25, chartH = h - 50, chartW = w - 55;
-    let points = [];
-    state.logs.forEach((l, i) => {
-        const x = padL + (i * (chartW / (state.logs.length - 1 || 1)));
-        let y, color;
-        if (l.status === "A") {
-            color = "#22c55e";
-            y = h - padB - ((Math.min(Math.max(l.rt, 100), 500) - 100) / 400 * chartH);
-            points.push(`${x},${y}`);
-        } else if (l.status === "O") { color = "#facc15"; y = 15; }
-        else if (l.status === "E") { color = "#ef4444"; y = h - padB; }
-        if (color) {
-            const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", "2");
-            c.setAttribute("fill", color); svg.appendChild(c);
-        }
-    });
-    if (points.length > 1) {
-        const p = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-        p.setAttribute("points", points.join(" "));
-        p.setAttribute("fill", "none"); p.setAttribute("stroke", "rgba(34, 197, 94, 0.3)");
-        svg.prepend(p);
-    }
+function downloadCSV() {
+    const timeEstimation = document.getElementById('input-time-est')?.value || '';
+    const header = ['indice', 'tipo_estimulo', 'tempo_reacao_ms', 'status', 'estimativa_tempo_min'];
+    const rows = state.logs.map((l, i) => [
+        i + 1,
+        l.type === 'G' ? 'Go' : 'No-Go',
+        l.rt ?? '',
+        l.status,
+        i === 0 ? timeEstimation : ''
+    ]);
+    const csv = [header, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `resultados-go-nogo-visual-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
