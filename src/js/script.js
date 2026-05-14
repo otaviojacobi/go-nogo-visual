@@ -164,7 +164,7 @@ function downloadCSV() {
         l.type === 'G' ? 'Go' : 'No-Go',
         l.rt ?? '',
         l.status,
-        i === 0 ? timeEstimation : ''
+        timeEstimation
     ]);
     const csv = [header, ...rows].map(row => row.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
