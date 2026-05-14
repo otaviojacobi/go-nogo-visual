@@ -158,7 +158,7 @@ function startCoolDown() {
 
 function downloadCSV() {
     const timeEstimation = document.getElementById('input-time-est')?.value || '';
-    const header = ['indice', 'tipo_estimulo', 'tempo_reacao_ms', 'status', 'estimativa_tempo_min'];
+    const fields = ['indice', 'tipo_estimulo', 'tempo_reacao_ms', 'status', 'estimativa_tempo_min'];
     const rows = state.logs.map((l, i) => [
         i + 1,
         l.type === 'G' ? 'Go' : 'No-Go',
@@ -166,7 +166,9 @@ function downloadCSV() {
         l.status,
         timeEstimation
     ]);
-    const csv = [header, ...rows].map(row => row.join(',')).join('\n');
+    const headerRow = ['campo', ...rows.map((_, i) => i + 1)];
+    const fieldRows = fields.map((field, fi) => [field, ...rows.map(row => row[fi])]);
+    const csv = [headerRow, ...fieldRows].map(row => row.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
